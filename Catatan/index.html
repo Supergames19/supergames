@@ -27,6 +27,7 @@
             width: 100%;
             height: 80vh; /* Membatasi tinggi container */
             overflow: hidden; /* Untuk menampilkan scrollbar hanya pada tabel */
+            text-align: center;
         }
         h1 {
             text-align: center;
@@ -45,7 +46,7 @@
         th, td {
             padding: 12px 15px;
             border: 1px solid #ddd;
-            text-align: left;
+            text-align: center;
         }
         th {
             background-color: #3f2b96;
@@ -106,34 +107,140 @@
         .share-whatsapp {
             background-color: #25D366;
         }
+        /* Styling untuk layar kecil (smartphone, terutama Android) */
+@media only screen and (max-width: 600px) {
+    body {
+        padding: 10px; /* Mengurangi padding di sekitar body */
+        display: block; /* Agar layout vertikal lebih baik di layar kecil */
+        height: auto; /* Agar konten tidak terpotong di layar kecil */
+    }
+    .container {
+        padding: 20px; /* Menyesuaikan padding */
+        max-width: 100%; /* Memastikan lebar container 100% dari layar */
+        height: auto; /* Membiarkan tinggi mengikuti konten */
+    }
+    h1 {
+        font-size: 24px; /* Mengurangi ukuran font judul */
+        margin-bottom: 15px; /* Mengurangi margin bawah judul */
+    }
+    table {
+        font-size: 14px; /* Mengurangi ukuran font pada tabel */
+    }
+    th, td {
+        padding: 8px 10px; /* Mengurangi padding dalam tabel */
+        font-size: 14px; /* Mengurangi ukuran font dalam tabel */
+    }
+    .share-buttons a {
+        font-size: 14px; /* Mengurangi ukuran tombol berbagi */
+        padding: 8px 15px; /* Mengurangi padding tombol berbagi */
+    }
+    footer {
+        font-size: 12px; /* Mengurangi ukuran font pada footer */
+    }
+}
+
+/* Styling khusus untuk layar ekstra kecil (di bawah 400px) */
+@media only screen and (max-width: 400px) {
+    h1 {
+        font-size: 20px; /* Lebih kecil untuk layar di bawah 400px */
+    }
+    table {
+        font-size: 12px; /* Ukuran font lebih kecil pada tabel */
+    }
+    .share-buttons a {
+        font-size: 12px; /* Ukuran tombol berbagi lebih kecil */
+        padding: 5px 10px;
+    }
+    th, td {
+        padding: 6px 8px; /* Padding yang lebih kecil untuk tabel */
+    }
+    footer {
+        font-size: 10px; /* Ukuran font lebih kecil untuk footer */
+    }
+}
+
     </style>
     <script>
         async function fetchData() {
             try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbw0lEFGf5f4_sBt7dwFB0N4eHFH5N6Uwg739sa0AEIDdb5Nx8hc8LiyY0G_l7t7BtIc-Q/exec');
+                // Menampilkan pesan loading sebelum data dimuat
+                document.getElementById('data-table-body').innerHTML = '<tr><td colspan="5">Memuat data...</td></tr>';
+    
+                const response = await fetch('https://script.google.com/macros/s/AKfycbxvKXhfrsC8n5u_yF0EG6BF2InHpp-8Sdp4X2FWorglAFzV5jIHFk4v2obKEO9nmItZBg/exec');
+
+                function formatTanggal(tanggalISO) {
+                    const tanggal = new Date(tanggalISO);
+
+                     // Mengambil bagian dari tanggal UTC (bukan dari zona waktu lokal)
+                    const day = tanggal.getUTCDate().toString().padStart(2, '0'); // Mengambil hari (UTC)
+                    const month = (tanggal.getUTCMonth() + 1).toString().padStart(2, '0'); // Mengambil bulan (UTC)
+                    const year = tanggal.getUTCFullYear(); // Mengambil tahun (UTC)
+
+                     // Format hasil jadi DD-MM-YYYY
+                      return `${day}-${month}-${year}`;
+                }
+  
+                
+                // Memeriksa apakah respons berhasil
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+    
                 const data = await response.json();
+    
+                // Memeriksa apakah data benar-benar ada dan berbentuk array
+                if (!Array.isArray(data)) {
+                    throw new Error('Data yang diterima bukan array');
+                }
+    
                 const tableBody = document.getElementById('data-table-body');
                 
                 // Clear existing rows
                 tableBody.innerHTML = '';
-
+    
+                // Mengecek apakah data kosong
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5">Tidak ada data yang tersedia</td></tr>';
+                    return;
+                }
+    
+                // Mengisi tabel dengan data dari API
                 data.forEach(item => {
                     const row = document.createElement('tr');
+    
+                    // Memeriksa apakah setiap item memiliki field tanggal, produk, pcs, hasilPerbulan, dan sudahLunas
+                    const tanggal = item.tanggal ? item.tanggal : 'Tanggal tidak tersedia';
+                    const produk = item.produk ? item.produk : 'Produk tidak tersedia';
+                    const pcs = item.pcs ? item.pcs : 'Pcs tidak tersedia';
+                    const hasilPerbulan = item.hasilPerbulan ? item.hasilPerbulan : '*';
+                    const sudahLunas = item.sudahLunas ? item.sudahLunas : '*';
+    
+                    // Mengisi baris baru dengan data dari item
                     row.innerHTML = `
-                        <td>${new Date().toLocaleDateString()}</td>
-                        <td>${item.produk}</td>
-                        <td>${item.pcs}</td>
-                        <td>${item.hasilPerbulan}</td>
-                        <td>${item.sudahLunas}</td>
+                        <td>${tanggal}</td> <!-- Menggunakan tanggal manual dari API -->
+                        <td>${produk}</td>
+                        <td>${pcs}</td>
+                        <td>${hasilPerbulan}</td>
+                        <td>${sudahLunas}</td>
                     `;
+                    
+                    // Menambahkan baris ke dalam tabel
                     tableBody.appendChild(row);
                 });
             } catch (error) {
+                // Menangani error dengan menampilkan pesan error
+                document.getElementById('data-table-body').innerHTML = `<tr><td colspan="5">Error: ${error.message}</td></tr>`;
                 console.error('Error fetching data:', error);
             }
         }
+    
+        // Memanggil fungsi fetchData saat halaman selesai dimuat
         window.onload = fetchData;
     </script>
+    
+    
+    
+    
 </head>
 <body>
     <div class="container">
@@ -156,9 +263,9 @@
         </div>
         <footer>
             <div class="share-buttons">
-                <a href="https://www.facebook.com/sharer/sharer.php?u=https://supergames19.github.io/supergames/Catatan/" class="share-facebook" target="_blank">Share on Facebook</a>
-                <a href="https://twitter.com/intent/tweet?url=https://supergames19.github.io/supergames/Catatan/" class="share-twitter" target="_blank">Share on Twitter</a>
                 <a href="https://wa.me/?text=https://supergames19.github.io/supergames/Catatan/" class="share-whatsapp" target="_blank">Share on WhatsApp</a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=https://supergames19.github.io/supergames/Catatan/" class="share-facebook" target="_blank">Share on Facebook</a>
+                <a href="https://twitter.com/intent/tweet?url=https://supergames19.github.io/supergames/Catatan/" class="share-twitter" target="_blank">Share on Twitter</a>                
             </div>
         </footer>
     </div>
