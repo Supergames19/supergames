@@ -115,23 +115,64 @@
 
         </div>
       </section>
-            
-              <br><img src="./assets/images/bar1.jpeg" width="500" height="520" loading="lazy" alt="Martin Jenny"
-              class="img-cover"></a></br>
-              
-              </figure>
-              <br><img src="./assets/images/bar2.jpeg" width="500" height="520" loading="lazy" alt="Martin Jenny"
-              class="img-cover"></a></br>
-              
-              </figure>
-              <br><img src="./assets/images/bar3.jpeg" width="500" height="520" loading="lazy" alt="Martin Jenny"
-              class="img-cover"></a></br>
-          
-              </figure>
-              <br><img src="./assets/images/bar4.jpeg" width="500" height="520" loading="lazy" alt="Martin Jenny"
-              class="img-cover"></a></br>
+            <style>
+              .image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-              </figure>
+figure {
+  margin: 0;
+  text-align: center;
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+figure:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.img-cover {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+figcaption {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+  font-style: italic;
+}
+            </style>
+              <div class="image-gallery">
+  <figure>
+    <img src="./assets/images/bar1.jpeg" width="300" height="320" class="img-cover" alt="Bar Image 1">
+    <figcaption>Caption for Image 1</figcaption>
+  </figure>
+  <figure>
+    <img src="./assets/images/bar2.jpeg" width="300" height="320" class="img-cover" alt="Bar Image 2">
+    <figcaption>Caption for Image 2</figcaption>
+  </figure>
+  <figure>
+    <img src="./assets/images/bar3.jpeg" width="300" height="320" class="img-cover" alt="Bar Image 3">
+    <figcaption>Caption for Image 3</figcaption>
+  </figure>
+  <figure>
+    <img src="./assets/images/bar4.jpeg" width="300" height="320" class="img-cover" alt="Bar Image 4">
+    <figcaption>Caption for Image 4</figcaption>
+  </figure>
+</div>
+
 
       <!-- 
         - #AUTHOR
