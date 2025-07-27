@@ -1,1 +1,0 @@
-It's and one page online shopping site only front end.
