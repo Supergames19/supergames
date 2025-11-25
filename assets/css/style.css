@@ -28,7 +28,7 @@
   --light-pink: hsl(357, 93%, 84%);
   --light-gray: hsl(0, 0%, 80%);
   --old-rose: hsl(357, 37%, 62%);
-  --seashell: hsl(20, 43%, 93%);
+  --seashell: hsl(7, 87%, 94%);
   --charcoal: hsl(203, 30%, 26%);
   --white: hsl(0, 0%, 100%);
 
@@ -1239,3 +1239,204 @@ textarea.input-field {
   .footer .logo { margin-block-end: 0; }
 
 }
+
+
+     /* css untuk like dan komentar */
+
+     p {     
+      
+      text-transform:capitalize;
+      font-weight: bold;
+      background: linear-gradient(90deg, #00a2ff, #ff00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.7), 
+                   -4px -4px 10px rgba(255, 255, 255, 0.3);
+      animation: glow 2s infinite alternate;
+    }
+  
+    h1 {     
+      text-align: center;
+      text-transform:capitalize;
+      font-weight: bold;
+      letter-spacing: 6px;
+      background: linear-gradient(90deg, #ff8a00, #e52e71);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.7), 
+                   -4px -4px 10px rgba(255, 255, 255, 0.3);
+      animation: glow 2s infinite alternate;
+    }
+
+    h2 {
+      text-align: center;
+      text-transform:capitalize;
+      font-weight: bold;
+      letter-spacing: 6px;
+      background: linear-gradient(90deg, #ff8a00, #e52e71);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.7), 
+                   -4px -4px 10px rgba(255, 255, 255, 0.3);
+      animation: glow 2s infinite alternate;
+    }
+
+    .emoji-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .emoji {
+      font-size: 2.0em;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+      font-style: italic;
+      font-weight: bold;   
+      text-shadow: 4px 4px 10px rgba(110, 71, 11, 0.7), 
+                   -4px -4px 10px rgba(134, 123, 123, 0.61)
+    }
+
+    .emoji:hover {
+      transform: scale(1.3);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .like-count {
+      font-size: 1em;
+      margin-top: 5px;
+      color: #ffd700;
+    }
+
+    .comment-form {
+      margin-top: 20px;
+    }
+
+    label {
+      font-size: 1em;
+      text-align: left;
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      margin-top: 20px;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      background: linear-gradient(90deg, #ff8a00, #e52e71);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.7), 
+                   -4px -4px 10px rgba(255, 255, 255, 0.3);
+      animation: glow 2s infinite alternate;
+    }
+
+    input,
+    textarea {
+      width: 90%;
+      padding: 12px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      box-shadow: 0 0 5px #ffd700;
+    }
+
+    button {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+      font-size: 1em;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-style: italic;
+      font-weight: bold;
+      text-shadow: 4px 4px 10px rgba(110, 71, 11, 0.7), 
+                   -4px -4px 10px rgba(134, 123, 123, 0.61)
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(255, 70, 92, 0.5);
+    }
+
+    .comment-list {
+      margin-top: 20px;
+      text-align: left;
+      font-style: italic;
+      font-weight: bold;   
+      text-shadow: 4px 4px 10px rgba(110, 71, 11, 0.7), 
+                   -4px -4px 10px rgba(134, 123, 123, 0.61)
+    }
+
+    .comment-item {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .comment-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .comment-icon {
+      font-size: 1.5em;
+      margin-right: 10px;
+    }
+
+    .comment-time {
+      font-size: 0.9em;
+      color: #ffd700;
+      margin-top: 10px;
+      text-align: right;
+      font-style: italic;
+      font-weight: bold;  
+      text-shadow: 4px 4px 10px rgba(110, 71, 11, 0.7), 
+                   -4px -4px 10px rgba(134, 123, 123, 0.61)
+    }
+
+    .comment-item:hover {
+      transform: scale(1.02);
+      transition: transform 0.3s ease;
+    }
+
+    /* Media Query untuk Android */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .emoji {
+        font-size: 2em;
+      }
+
+      input,
+      textarea {
+        font-size: 0.9em;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 0.9em;
+      }
+
+      .container {
+        padding: 20px;
+      }
+    }
