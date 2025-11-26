@@ -24,13 +24,13 @@
   --chinese-violet: hsl(304, 14%, 46%);
   --sonic-silver: hsl(208, 7%, 46%);
   --old-rose_30: hsla(357, 37%, 62%, 0.3);
-  --ghost-white: hsl(233, 33%, 95%);
+  --ghost-white: hsl(233, 85%, 92%);
   --light-pink: hsl(357, 93%, 84%);
   --light-gray: hsl(0, 0%, 80%);
   --old-rose: hsl(357, 37%, 62%);
   --seashell: hsl(7, 87%, 94%);
   --charcoal: hsl(203, 30%, 26%);
-  --white: hsl(0, 0%, 100%);
+  --white: hsl(33, 100%, 94%);
 
   /**
    * typography
@@ -1307,7 +1307,7 @@ textarea.input-field {
     .like-count {
       font-size: 1em;
       margin-top: 5px;
-      color: #ffd700;
+      color: #92321a;
     }
 
     .comment-form {
@@ -1367,48 +1367,6 @@ textarea.input-field {
     button:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 15px rgba(255, 70, 92, 0.5);
-    }
-
-    .comment-list {
-      margin-top: 20px;
-      text-align: left;
-      font-style: italic;
-      font-weight: bold;   
-      text-shadow: 4px 4px 10px rgba(110, 71, 11, 0.7), 
-                   -4px -4px 10px rgba(134, 123, 123, 0.61)
-    }
-
-    .comment-item {
-      background: linear-gradient(to right, #6a11cb, #2575fc);
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      color: #fff;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .comment-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .comment-icon {
-      font-size: 1.5em;
-      margin-right: 10px;
-    }
-
-    .comment-time {
-      font-size: 0.9em;
-      color: #ffd700;
-      margin-top: 10px;
-      text-align: right;
-      font-style: italic;
-      font-weight: bold;  
-      text-shadow: 4px 4px 10px rgba(110, 71, 11, 0.7), 
-                   -4px -4px 10px rgba(134, 123, 123, 0.61)
     }
 
     .comment-item:hover {
