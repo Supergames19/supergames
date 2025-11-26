@@ -56,15 +56,7 @@
           </li>
 
           <li class="navbar-item">
-            <a href="https://accounts.google.com/o/oauth2/v2/auth/identifier?client_id=508198334196-bgmagrg0a2rub674g0shidj8fnd50dji.apps.googleusercontent.com&state=%7B%22ctkn%22%3A%223v5rt0j12gfkle%22%7D&redirect_uri=https%3A%2F%2Fdisqus.com%2F_ax%2Fgoogle%2Fcomplete%2F&response_type=code&hl=en_US&scope=openid%20email%20profile&service=lso&o2v=2&theme=glif&flowName=GeneralOAuthFlow" class="navbar-link" data-nav-link>LOGIN UP</a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="https://maps.app.goo.gl/DHU#gtWgFwkadoBy7" class="navbar-link" data-nav-link>ULASAN</a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="https://api.whatsapp.com/send?phone=+6282367136420=&text=halloo...!!" class="navbar-link" data-nav-link>CONTACT</a>
+            <a href="https://wa.me/6282367136420?text=Halo%20SG%20KOMPUTER" class="navbar-link" data-nav-link>CONTACT</a>
           </li>
 
         </ul>
@@ -102,7 +94,7 @@
             <h1 class="h1 hero-title">RANTAU PRAPAT</h1>
 
             <p class="section-text">
-              MENJUAL BERBAGAI MACAM KOMPUTER, LAPTOP, CCTV, PROJEKTOR, PLAYSTATION, PRINTER & ACCESORIES
+              MURAH DAN LENGKAP </br>MENJUAL BARANG BARU BERGARANSI BERBAGAI MACAM KOMPUTER, LAPTOP, CCTV, PROJEKTOR, PLAYSTATION, PRINTER & ACCESORIES
             </p>
             
           </div>
@@ -330,10 +322,10 @@
       <section class="section author" id="author">
         <div class="container">
           
-          <figure class="author-banner img-holder" style="--width: 700; --height: 720;">
+          <a href="https://www.google.com/maps/place/SG+komputer/@2.1015238,99.8254288,3a,33.7y,56.03h,89.4t/data=!3m7!1e1!3m5!1sHJY44PNYuTdB-AA9wvbCdQ!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0.6021124069658157%26panoid%3DHJY44PNYuTdB-AA9wvbCdQ%26yaw%3D56.02593794929015!7i16384!8i8192!4m14!1m7!3m6!1s0x302da100677ffe25:0xe01ce247714fdb3c!2sSG+komputer!8m2!3d2.1015872!4d99.8255257!16s%2Fg%2F11mm0np6nc!3m5!1s0x302da100677ffe25:0xe01ce247714fdb3c!8m2!3d2.1015872!4d99.8255257!16s%2Fg%2F11mm0np6nc?entry=ttu&g_ep=EgoyMDI1MTExMi4wIKXMDSoASAFQAw%3D%3D" figure class="author-banner img-holder" style="--width: 700; --height: 720;">
             <img src="./assets/images/SG.jpeg" width="700" height="720" loading="lazy" alt="IMAGE"
               class="img-cover">
-          </figure>
+          </figure></a>
 
           <div class="author-content">
 
@@ -685,24 +677,132 @@
 
           <div class="wrapper">
           
-              <div class="container">
-                <h1>Like & Komentar</br></h1>
+              <div class="container custom-feedback-area">
+                <!-- Tambahan CSS Khusus untuk area komentar & rating -->
+                <style>
+                  .custom-feedback-area {
+                    max-width: 650px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #fcfcfc;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                  }
+
+                  /* Style untuk Form */
+                  .comment-form input,
+                  .comment-form textarea {
+                    width: 100%;
+                    padding: 12px 15px;
+                    margin-bottom: 15px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    font-family: inherit;
+                    transition: border-color 0.3s;
+                  }
+
+                  .comment-form input:focus,
+                  .comment-form textarea:focus {
+                    outline: none;
+                    border-color: #hsl(203, 89%, 53%); /* Menyesuaikan warna tema */
+                  }
+
+                  .comment-form button {
+                    width: 100%;
+                    padding: 12px;
+                    background-color: #222;
+                    color: #fff;
+                    border: none;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: opacity 0.3s;
+                  }
+
+                  .comment-form button:hover {
+                    opacity: 0.8;
+                  }
+
+                  /* Style untuk List Komentar (SCROLLABLE) */
+                  .comment-list {
+                    margin-top: 30px;
+                    max-height: 250px; /* Batas tinggi komentar */
+                    overflow-y: auto;  /* Mengaktifkan scroll jika lebih dari batas */
+                    padding-right: 10px; /* Ruang untuk scrollbar */
+                    border-top: 2px solid #eee;
+                    padding-top: 15px;
+                  }
+
+                  /* Custom Scrollbar agar lebih cantik */
+                  .comment-list::-webkit-scrollbar {
+                    width: 6px;
+                  }
+                  .comment-list::-webkit-scrollbar-track {
+                    background: #f1f1f1;
+                    border-radius: 10px;
+                  }
+                  .comment-list::-webkit-scrollbar-thumb {
+                    background: #ccc;
+                    border-radius: 10px;
+                  }
+                  .comment-list::-webkit-scrollbar-thumb:hover {
+                    background: #aaa;
+                  }
+
+                  /* Style Item Komentar Individual */
+                  .comment-item {
+                    background: #fff;
+                    border: 1px solid #eee;
+                    border-radius: 10px;
+                    padding: 15px;
+                    margin-bottom: 15px;
+                    transition: box-shadow 0.2s;
+                  }
+                  
+                  .comment-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 8px;
+                    color: #333;
+                    font-size: 0.95rem;
+                  }
+
+                  .comment-icon {
+                    background: #eee;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 50%;
+                  }
+
+                  .comment-time {
+                    font-size: 0.75rem;
+                    color: #999;
+                    margin-top: 8px;
+                    text-align: right;
+                  }
+                </style>
+
+                <h2 class="h2" style="text-align: center;">Beri Nilai & Komentar</h2>
 
                 <!-- Emoji Reaction -->
                 <div class="emoji-container" id="emojiContainer">
-                  <div class="emoji" data-reaction="heart">❤️
+                  <div class="emoji" data-reaction="heart" title="Suka">❤️
                     <div class="like-count" id="like-heart">0</div>
                   </div>
-                  <div class="emoji" data-reaction="laugh">😂
+                  <div class="emoji" data-reaction="laugh" title="Lucu">😂
                     <div class="like-count" id="like-laugh">0</div>
                   </div>
-                  <div class="emoji" data-reaction="wow">😮
+                  <div class="emoji" data-reaction="wow" title="Wow">😮
                     <div class="like-count" id="like-wow">0</div>
                   </div>
-                  <div class="emoji" data-reaction="sad">😢
+                  <div class="emoji" data-reaction="sad" title="Sedih">😢
                     <div class="like-count" id="like-sad">0</div>
                   </div>
-                  <div class="emoji" data-reaction="angry">😡
+                  <div class="emoji" data-reaction="angry" title="Marah">😡
                     <div class="like-count" id="like-angry">0</div>
                   </div>
                 </div>
@@ -710,11 +810,11 @@
                 <!-- Comment Form -->
                 <div class="comment-form">
                   <form id="commentForm">
-                    <label for="name">Nama</label>
+                    <label for="name" style="display:block; margin-bottom:5px; font-weight:500;">Nama</label>
                     <input type="text" id="name" placeholder="Masukkan nama kamu..." required />
 
-                    <label for="comment">Komentar</label>
-                    <textarea id="comment" rows="4" placeholder="Tulis komentar kamu..." required></textarea>
+                    <label for="comment" style="display:block; margin-bottom:5px; font-weight:500;">Komentar</label>
+                    <textarea id="comment" rows="3" placeholder="Tulis komentar kamu..." required></textarea>
 
                     <button type="submit">Kirim Komentar</button>
                   </form>
@@ -722,14 +822,15 @@
 
                 <!-- Display Comments -->
                 <div class="comment-list" id="commentList">
-                  <h2>Komentar</h2>
+                  <h3 style="margin-bottom: 15px;">Komentar Terbaru (<span id="totalComments">0</span>)</h3>
+                  <!-- Komentar akan muncul di sini -->
                 </div>
               </div>
 
               <script>
                    const scriptURL = 'https://script.google.com/macros/s/AKfycbyfBxFO9RpUP1s3Nwlxij5jnek1-va6B1BgksEYFmXdmIQowAnfaYub8yE3F9ex58Dv/exec'; // Ganti dengan URL Apps Script Anda
   
-                   let cachedData = null;
+                  let cachedData = null;
   
                     async function loadData() {
                try {
@@ -749,7 +850,11 @@
   
                  // Display Comments
                    const commentList = document.getElementById('commentList');
-                   commentList.innerHTML = '<h2>Komentar</h2>';
+                   const totalCount = data.comments.length; // Hitung jumlah komentar
+
+                   // Reset isi commentList tapi sertakan jumlah komentar di Header
+                   commentList.innerHTML = `<h3 style="margin-bottom: 15px;">Komentar Terbaru (${totalCount})</h3>`;
+                   
                   data.comments.forEach(comment => {
                     const formattedTime = formatTime(comment.time);
                     commentList.innerHTML += `
@@ -758,7 +863,7 @@
                        <span class="comment-icon">👤</span>
                        <strong>${comment.name}</strong>
                      </div>
-                    <p>${comment.comment}</p>
+                    <p style="color: #555; line-height: 1.5;">${comment.comment}</p>
                   <p class="comment-time">${formattedTime}</p>
                   </div>`;
                   });
@@ -789,22 +894,42 @@
               e.preventDefault();
              const name = document.getElementById('name').value.trim();
              const comment = document.getElementById('comment').value.trim();
+             
+             // Tambahkan loading state
+             const btn = e.target.querySelector('button');
+             const originalText = btn.innerText;
+             btn.innerText = 'Mengirim...';
+             btn.disabled = true;
   
            if (name && comment) {
                await fetch(scriptURL, {
                method: 'POST',
                body: new URLSearchParams({ name, comment }),
              });
-              Swal.fire('Berhasil!', 'Komentar kamu berhasil dikirim.', 'success');
+              // Swal.fire('Berhasil!', 'Komentar kamu berhasil dikirim.', 'success'); // Commented out if Swal is not loaded
+              alert('Komentar berhasil dikirim!');
               document.getElementById('commentForm').reset();
             loadData();
            }
+           // Reset button
+           btn.innerText = originalText;
+           btn.disabled = false;
           });
   
            // Handle Emoji Click
              document.getElementById('emojiContainer').addEventListener('click', async (e) => {
-              if (e.target.classList.contains('emoji')) {
-               const reaction = e.target.dataset.reaction;
+              // Cek apakah yang diklik adalah emoji atau child-nya
+              let target = e.target;
+              if (target.classList.contains('like-count')) {
+                  target = target.parentElement;
+              }
+              
+              if (target.classList.contains('emoji')) {
+               const reaction = target.dataset.reaction;
+               // Efek visual klik
+               target.style.transform = "scale(0.8)";
+               setTimeout(() => target.style.transform = "", 150);
+
                  await fetch(scriptURL, {
                  method: 'POST',
                 body: new URLSearchParams({ reaction }),
