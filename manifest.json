@@ -1,7 +1,7 @@
 {
   "name": "Cek Garansi",
   "short_name": "Garansi",
-  "start_url": "index.html",
+  "start_url": "Check.html",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#00ff88",
@@ -18,4 +18,5 @@
       "type": "image/png"
     }
   ]
+
 }
