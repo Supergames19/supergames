@@ -1,22 +1,23 @@
 {
   "name": "Cek Garansi",
   "short_name": "Garansi",
-  "start_url": "Check.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#00ff88",
   "orientation": "portrait",
+  "icon": "favicon.ico",
   "icons": [
+    
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/1077/1077114.png",
+      "src": "android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/1077/1077114.png",
+      "src": "android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ]
-
 }
