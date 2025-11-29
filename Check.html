@@ -27,20 +27,18 @@
             font-family: 'Poppins', sans-serif;
             height: 100vh;
             display: flex;
-            justify-content: center; /* Tengah Horizontal */
-            align-items: center;     /* Tengah Vertikal */
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
             flex-direction: column;
         }
 
-        /* Background Particle */
         #particle-canvas {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
         }
 
-        /* Container Utama */
         .main-container {
             width: 90%;
             max-width: 450px;
@@ -57,7 +55,6 @@
             color: var(--primary);
         }
 
-        /* Kotak Pencarian Kaca */
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(10px);
@@ -72,11 +69,6 @@
             overflow-y: auto;
         }
 
-        .glass-card:hover {
-            border-color: rgba(0, 255, 136, 0.3);
-        }
-
-        /* Flex container untuk Input + Tombol Kamera */
         .input-group {
             display: flex;
             gap: 10px;
@@ -103,7 +95,6 @@
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
         }
 
-        /* Tombol Kamera Kecil */
         .scan-btn {
             width: 60px;
             padding: 0;
@@ -125,7 +116,6 @@
             box-shadow: 0 0 15px var(--primary);
         }
 
-        /* Tombol Utama */
         .main-btn {
             width: 100%;
             padding: 15px;
@@ -152,7 +142,6 @@
             box-shadow: none;
         }
 
-        /* Tombol Admin Khusus */
         .admin-btn {
             width: 100%;
             margin-top: 15px;
@@ -172,7 +161,6 @@
             box-shadow: 0 0 15px var(--danger);
         }
 
-        /* Hasil Pencarian */
         #result-box {
             margin-top: 20px;
             border-top: 1px solid var(--border);
@@ -217,14 +205,13 @@
             animation: rotation 1s linear infinite;
         }
         
-        /* Area Kamera */
         #reader {
             width: 100%;
             margin-bottom: 20px;
             border-radius: 10px;
             overflow: hidden;
             border: 2px solid var(--primary);
-            display: none; /* Sembunyi default */
+            display: none; 
             background: black;
         }
         #reader video {
@@ -232,7 +219,6 @@
             border-radius: 10px;
         }
 
-        /* Scan Status Overlay */
         #scan-status {
             text-align: center;
             color: var(--primary);
@@ -258,7 +244,7 @@
             
             <!-- Area Kamera Scanner -->
             <div id="reader"></div>
-            <div id="scan-status">Mencari kode S/N atau Barcode...</div>
+            <div id="scan-status">Arahkan kamera ke QR / Barcode...</div>
             <button id="stop-scan-btn" class="admin-btn" style="display:none; margin-bottom:15px; margin-top:0;">Tutup Kamera</button>
 
             <div class="input-group">
@@ -338,7 +324,7 @@
             if(e.key === 'Enter') fetchData();
         });
 
-        // --- SCANNER LOGIC CERDAS (UPDATED) ---
+        // --- SCANNER LOGIC CERDAS (DIPERBAIKI) ---
         let html5QrCode;
 
         function startScanner() {
@@ -346,83 +332,98 @@
             document.getElementById('reader').style.display = 'block';
             stopScanBtn.style.display = 'block';
             scanStatus.style.display = 'block';
+            scanStatus.innerText = "Mencari kode S/N...";
 
             html5QrCode = new Html5Qrcode("reader");
             
-            // Konfigurasi scan (box scan lebih lebar untuk barcode panjang)
-            const config = { fps: 15, qrbox: { width: 300, height: 150 } };
+            // Area Scan diperkecil agar pengguna lebih fokus mengarahkan ke bagian S/N
+            const config = { fps: 15, qrbox: { width: 250, height: 150 } };
             
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
             .catch(err => {
-                alert("Gagal mengakses kamera. Pastikan izin kamera diberikan.");
+                alert("Gagal mengakses kamera. Izinkan akses kamera di browser Anda.");
                 stopScanner();
             });
         }
 
         function onScanSuccess(decodedText, decodedResult) {
-            // --- LOGIKA FILTER CERDAS ---
+            // Panggil fungsi ekstraksi yang baru
             const cleanSN = extractSerialNumber(decodedText);
 
-            if (cleanSN.length > 3) {
-                // Jika hasil ekstraksi valid (lebih dari 3 karakter)
-                console.log(`Original: ${decodedText} -> Extracted: ${cleanSN}`);
+            if (cleanSN) {
+                console.log(`Scan Berhasil. Asli: ${decodedText} -> SN: ${cleanSN}`);
                 
+                // Efek visual & Input
                 snInput.value = cleanSN;
+                scanStatus.innerText = "S/N Ditemukan!";
+                
+                // Bunyi 'Beep' (opsional, visual saja)
+                snInput.style.borderColor = "white";
+                setTimeout(() => snInput.style.borderColor = "#333", 300);
+
                 stopScanner();
                 fetchData(); // Otomatis cari
-            } else {
-                console.log("Scan diabaikan (terlalu pendek/tidak valid):", decodedText);
             }
         }
 
         function onScanFailure(error) {
-            // Loop scanning...
+            // Jangan lakukan apa-apa, biarkan scanning berjalan terus
         }
 
-        // --- FUNGSI EKSTRAKSI SERIAL NUMBER ---
+        // --- FUNGSI EKSTRAKSI SERIAL NUMBER (DIPERBAIKI TOTAL) ---
         function extractSerialNumber(text) {
-            text = text.toUpperCase();
+            if (!text) return null;
+            text = text.toUpperCase(); // Ubah ke huruf besar semua
 
-            // 1. Cek Pola: S/N, SERIAL NUMBER, SERIAL NO, SN
-            // Regex ini mencari awalan tersebut, membuang simbol pemisah, dan mengambil sisa teksnya
-            const patterns = [
-                /S\/N\s*[:.-]?\s*([A-Z0-9\-]+)/,          
-                /SERIAL\s*NUMBER\s*[:.-]?\s*([A-Z0-9\-]+)/, 
-                /SERIAL\s*NO\.?\s*[:.-]?\s*([A-Z0-9\-]+)/,  
-                /SN\s*[:.-]?\s*([A-Z0-9\-]+)/             
-            ];
+            // 1. REGEX YANG LEBIH KUAT
+            // Mencari pola: (S/N atau SERIAL NO atau SN) diikuti spasi/titik2/minus, lalu kode SN
+            // Penjelasan Regex:
+            // (?: ... )  -> Grouping label (S/N, SERIAL, SN, dll)
+            // \s*        -> Boleh ada spasi atau tidak
+            // [:.\-]?    -> Boleh ada pemisah titik dua (:), titik (.), atau strip (-) atau tidak ada
+            // \s*        -> Boleh ada spasi lagi
+            // ([A-Z0-9\-]+) -> Menangkap Huruf, Angka, dan Strip sebagai SN
+            const regex = /(?:S\/N|SERIAL\s*NUMBER|SERIAL\s*NO\.?|SN)\s*[:.\-]?\s*([A-Z0-9\-]+)/i;
 
-            for (let pattern of patterns) {
-                const match = text.match(pattern);
-                if (match && match[1]) {
-                    // Jika ketemu pola "S/N: ABCDE", ambil "ABCDE"
-                    return match[1].trim(); 
-                }
+            const match = text.match(regex);
+
+            // Jika pola "S/N: xxxx" ditemukan:
+            if (match && match[1]) {
+                // Bersihkan hasil tangkapan dari karakter aneh jika ada
+                return match[1].replace(/[^A-Z0-9\-]/g, "").trim(); 
             }
 
-            // 2. Jika tidak ada awalan spesifik (berarti Barcode batang biasa / QR murni)
-            // Bersihkan dari karakter aneh, hanya terima Huruf, Angka, dan Strip (-)
-            // Contoh: "  12345-ABC  " -> "12345-ABC"
-            let rawCode = text.replace(/[^A-Z0-9\-]/g, "").trim();
+            // 2. FALLBACK (JIKA TIDAK ADA TULISAN S/N)
+            // Jika yang discan hanya barcode batang (tanpa label)
+            // Syarat: Harus terlihat seperti SN (Hanya angka/huruf/strip, panjang 5-25 karakter)
+            // Ini untuk mencegah scan teks paragraf biasa
+            const rawCode = text.replace(/[^A-Z0-9\-]/g, "").trim();
             
-            return rawCode;
+            if (rawCode.length > 4 && rawCode.length < 30) {
+                return rawCode;
+            }
+
+            return null; // Gagal mengenali
         }
 
         function stopScanner() {
             if (html5QrCode) {
                 html5QrCode.stop().then((ignore) => {
                     html5QrCode.clear();
-                    document.getElementById('reader').style.display = 'none';
-                    stopScanBtn.style.display = 'none';
-                    scanStatus.style.display = 'none';
+                    closeCameraUI();
                 }).catch((err) => {
-                    console.error("Failed to stop scanner.");
+                    console.error("Gagal stop scanner", err);
+                    closeCameraUI();
                 });
             } else {
-                document.getElementById('reader').style.display = 'none';
-                stopScanBtn.style.display = 'none';
-                scanStatus.style.display = 'none';
+                closeCameraUI();
             }
+        }
+
+        function closeCameraUI() {
+            document.getElementById('reader').style.display = 'none';
+            stopScanBtn.style.display = 'none';
+            scanStatus.style.display = 'none';
         }
 
         // --- FUNGSI CARI DATA ---
