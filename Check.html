@@ -4,16 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CEK STATUS GARANSI</title>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Library QR/Barcode Scanner -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     
     <style>
         :root {
-            --primary: #00ff88; /* Hijau Neon */
-            --danger: #ff0055;  /* Merah Neon */
-            --warning: #ffcc00; /* Kuning Peringatan */
+            --primary: #00ff88;
+            --danger: #ff0055;
             --bg: #050505;
             --glass: rgba(255, 255, 255, 0.05);
             --border: rgba(255, 255, 255, 0.1);
@@ -131,17 +128,6 @@
             transition: 0.3s;
         }
 
-        .main-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px var(--primary);
-        }
-
-        .main-btn:disabled {
-            background: #555;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
         .admin-btn {
             width: 100%;
             margin-top: 15px;
@@ -205,6 +191,7 @@
             animation: rotation 1s linear infinite;
         }
         
+        /* Area Kamera */
         #reader {
             width: 100%;
             margin-bottom: 20px;
@@ -244,7 +231,7 @@
             
             <!-- Area Kamera Scanner -->
             <div id="reader"></div>
-            <div id="scan-status">Arahkan kamera ke QR / Barcode...</div>
+            <div id="scan-status">Arahkan kamera ke Barcode S/N...</div>
             <button id="stop-scan-btn" class="admin-btn" style="display:none; margin-bottom:15px; margin-top:0;">Tutup Kamera</button>
 
             <div class="input-group">
@@ -307,7 +294,6 @@
         const resultBox = document.getElementById('result-box');
         const scanStatus = document.getElementById('scan-status');
 
-        // Elemen Hasil
         const badgeEl = document.getElementById('status-badge');
         const modelEl = document.getElementById('res-model');
         const snEl = document.getElementById('res-sn');
@@ -315,7 +301,6 @@
         const dateEl = document.getElementById('res-date');
         const countdownEl = document.getElementById('res-countdown');
 
-        // Event Listener
         searchBtn.addEventListener('click', fetchData);
         cleanBtn.addEventListener('click', downloadAndClean);
         scanTriggerBtn.addEventListener('click', startScanner);
@@ -324,7 +309,7 @@
             if(e.key === 'Enter') fetchData();
         });
 
-        // --- SCANNER LOGIC CERDAS (DIPERBAIKI) ---
+        // --- SCANNER LOGIC (DIPERBAIKI UNTUK BARCODE BATANG) ---
         let html5QrCode;
 
         function startScanner() {
@@ -332,95 +317,105 @@
             document.getElementById('reader').style.display = 'block';
             stopScanBtn.style.display = 'block';
             scanStatus.style.display = 'block';
-            scanStatus.innerText = "Mencari kode S/N...";
+            scanStatus.innerText = "Arahkan kamera ke Barcode S/N...";
+            scanStatus.style.color = "var(--primary)";
 
             html5QrCode = new Html5Qrcode("reader");
             
-            // Area Scan diperkecil agar pengguna lebih fokus mengarahkan ke bagian S/N
-            const config = { fps: 15, qrbox: { width: 250, height: 150 } };
+            // PENTING: qrbox dibuat LEBAR (Persegi Panjang) karena barcode S/N itu panjang ke samping
+            const config = { 
+                fps: 15, 
+                qrbox: { width: 300, height: 100 }, 
+                aspectRatio: 1.0 
+            };
             
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
             .catch(err => {
-                alert("Gagal mengakses kamera. Izinkan akses kamera di browser Anda.");
+                alert("Gagal mengakses kamera. Izinkan akses kamera.");
                 stopScanner();
             });
         }
 
         function onScanSuccess(decodedText, decodedResult) {
-            // Panggil fungsi ekstraksi yang baru
-            const cleanSN = extractSerialNumber(decodedText);
+            // Proses teks hasil scan
+            const cleanSN = processScannedText(decodedText);
 
             if (cleanSN) {
-                console.log(`Scan Berhasil. Asli: ${decodedText} -> SN: ${cleanSN}`);
-                
-                // Efek visual & Input
+                console.log(`Scan Diterima: ${cleanSN}`);
                 snInput.value = cleanSN;
-                scanStatus.innerText = "S/N Ditemukan!";
+                scanStatus.innerText = "S/N Terdeteksi!";
                 
-                // Bunyi 'Beep' (opsional, visual saja)
-                snInput.style.borderColor = "white";
-                setTimeout(() => snInput.style.borderColor = "#333", 300);
+                // Efek kedip input
+                snInput.style.backgroundColor = "rgba(0, 255, 136, 0.3)";
+                setTimeout(() => snInput.style.backgroundColor = "rgba(0, 0, 0, 0.5)", 300);
 
                 stopScanner();
                 fetchData(); // Otomatis cari
+            } else {
+                // Jika yang discan adalah EAN/Kode Toko, beri info tapi jangan stop
+                console.log("Scan diabaikan (EAN/Invalid): " + decodedText);
+                scanStatus.innerText = "Itu kode EAN/Produk. Cari kode S/N...";
+                scanStatus.style.color = "var(--warning)";
             }
         }
 
         function onScanFailure(error) {
-            // Jangan lakukan apa-apa, biarkan scanning berjalan terus
+            // Biarkan scanning berjalan
         }
 
-        // --- FUNGSI EKSTRAKSI SERIAL NUMBER (DIPERBAIKI TOTAL) ---
-        function extractSerialNumber(text) {
+        // --- LOGIKA FILTER S/N (DIPERBAIKI BERDASARKAN FOTO) ---
+        function processScannedText(text) {
             if (!text) return null;
-            text = text.toUpperCase(); // Ubah ke huruf besar semua
+            text = text.toUpperCase().trim();
 
-            // 1. REGEX YANG LEBIH KUAT
-            // Mencari pola: (S/N atau SERIAL NO atau SN) diikuti spasi/titik2/minus, lalu kode SN
-            // Penjelasan Regex:
-            // (?: ... )  -> Grouping label (S/N, SERIAL, SN, dll)
-            // \s*        -> Boleh ada spasi atau tidak
-            // [:.\-]?    -> Boleh ada pemisah titik dua (:), titik (.), atau strip (-) atau tidak ada
-            // \s*        -> Boleh ada spasi lagi
-            // ([A-Z0-9\-]+) -> Menangkap Huruf, Angka, dan Strip sebagai SN
-            const regex = /(?:S\/N|SERIAL\s*NUMBER|SERIAL\s*NO\.?|SN)\s*[:.\-]?\s*([A-Z0-9\-]+)/i;
-
-            const match = text.match(regex);
-
-            // Jika pola "S/N: xxxx" ditemukan:
+            // 1. JIKA ADA LABEL DI DALAM DATA (Biasanya QR Code)
+            // Cek jika data mengandung "S/N:" atau "SN"
+            const regexLabel = /(?:S\/N|SERIAL\s*NUMBER|SN)\s*[:.\-]?\s*([A-Z0-9\-]+)/i;
+            const match = text.match(regexLabel);
             if (match && match[1]) {
-                // Bersihkan hasil tangkapan dari karakter aneh jika ada
                 return match[1].replace(/[^A-Z0-9\-]/g, "").trim(); 
             }
 
-            // 2. FALLBACK (JIKA TIDAK ADA TULISAN S/N)
-            // Jika yang discan hanya barcode batang (tanpa label)
-            // Syarat: Harus terlihat seperti SN (Hanya angka/huruf/strip, panjang 5-25 karakter)
-            // Ini untuk mencegah scan teks paragraf biasa
-            const rawCode = text.replace(/[^A-Z0-9\-]/g, "").trim();
-            
-            if (rawCode.length > 4 && rawCode.length < 30) {
-                return rawCode;
-            }
+            // 2. JIKA BARCODE BATANG MURNI (Seperti di Foto)
+            // Bersihkan simbol aneh, sisakan Huruf, Angka, dan Strip
+            let raw = text.replace(/[^A-Z0-9\-]/g, "");
 
-            return null; // Gagal mengenali
+            // --- FILTER PENTING (Agar tidak salah scan EAN/UPC) ---
+            
+            // a. Filter EAN-13 (Kode Produk Toko): Biasanya 13 digit Angka
+            if (/^\d{13}$/.test(raw)) return null; 
+
+            // b. Filter UPC-A / EAN-8: Biasanya 8 atau 12 digit Angka
+            if (/^\d{8}$/.test(raw) || /^\d{12}$/.test(raw)) return null;
+
+            // c. Filter Panjang Karakter S/N Laptop
+            // ASUS (S7N...) -> ~15 char
+            // Toshiba (4A0...) -> ~9-10 char
+            // Acer (NXD...) -> ~22 char
+            // Jadi kita terima panjang antara 5 sampai 30 karakter
+            if (raw.length < 5 || raw.length > 30) return null;
+
+            // d. Filter Tambahan: S/N Laptop biasanya ada HURUF-nya (Alphanumeric)
+            // Kecuali beberapa model lama banget. Tapi untuk amannya, kita terima saja raw-nya
+            // asalkan bukan EAN 13 digit yang pasti salah.
+
+            return raw;
         }
 
         function stopScanner() {
             if (html5QrCode) {
-                html5QrCode.stop().then((ignore) => {
+                html5QrCode.stop().then(() => {
                     html5QrCode.clear();
-                    closeCameraUI();
-                }).catch((err) => {
-                    console.error("Gagal stop scanner", err);
-                    closeCameraUI();
+                    closeUI();
+                }).catch(() => {
+                    closeUI();
                 });
             } else {
-                closeCameraUI();
+                closeUI();
             }
         }
 
-        function closeCameraUI() {
+        function closeUI() {
             document.getElementById('reader').style.display = 'none';
             stopScanBtn.style.display = 'none';
             scanStatus.style.display = 'none';
@@ -567,7 +562,6 @@
             }
         }
 
-        // --- BACKGROUND PARTIKEL ---
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
