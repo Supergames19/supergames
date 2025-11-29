@@ -68,7 +68,7 @@
             box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
             transition: transform 0.3s ease;
             position: relative;
-            max-height: 90vh; /* Agar bisa scroll jika konten panjang di HP */
+            max-height: 90vh; 
             overflow-y: auto;
         }
 
@@ -232,6 +232,17 @@
             border-radius: 10px;
         }
 
+        /* Scan Status Overlay */
+        #scan-status {
+            text-align: center;
+            color: var(--primary);
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            display: none;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -247,6 +258,7 @@
             
             <!-- Area Kamera Scanner -->
             <div id="reader"></div>
+            <div id="scan-status">Mencari kode S/N atau Barcode...</div>
             <button id="stop-scan-btn" class="admin-btn" style="display:none; margin-bottom:15px; margin-top:0;">Tutup Kamera</button>
 
             <div class="input-group">
@@ -290,7 +302,7 @@
             </div>
         </div>
 
-        <!-- Tombol Hapus Data (Fitur Baru) -->
+        <!-- Tombol Hapus Data -->
         <button id="clean-btn" class="admin-btn">Download & Hapus Data Expired</button>
     </div>
 
@@ -307,6 +319,7 @@
         const loadingEl = document.getElementById('loading');
         const loadingText = document.getElementById('loading-text');
         const resultBox = document.getElementById('result-box');
+        const scanStatus = document.getElementById('scan-status');
 
         // Elemen Hasil
         const badgeEl = document.getElementById('status-badge');
@@ -325,21 +338,20 @@
             if(e.key === 'Enter') fetchData();
         });
 
-        // --- SCANNER LOGIC (BARU) ---
+        // --- SCANNER LOGIC CERDAS (UPDATED) ---
         let html5QrCode;
 
         function startScanner() {
-            // Sembunyikan hasil lama jika ada
             resultBox.style.display = 'none';
             document.getElementById('reader').style.display = 'block';
             stopScanBtn.style.display = 'block';
+            scanStatus.style.display = 'block';
 
             html5QrCode = new Html5Qrcode("reader");
             
-            // Konfigurasi kamera
-            const config = { fps: 10, qrbox: { width: 250, height: 150 } };
+            // Konfigurasi scan (box scan lebih lebar untuk barcode panjang)
+            const config = { fps: 15, qrbox: { width: 300, height: 150 } };
             
-            // Menggunakan kamera belakang (environment)
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
             .catch(err => {
                 alert("Gagal mengakses kamera. Pastikan izin kamera diberikan.");
@@ -348,36 +360,68 @@
         }
 
         function onScanSuccess(decodedText, decodedResult) {
-            // Jika berhasil baca barcode
-            console.log(`Code matched = ${decodedText}`, decodedResult);
-            
-            // Isi ke input
-            snInput.value = decodedText;
-            
-            // Hentikan kamera
-            stopScanner();
-            
-            // Langsung cari data
-            fetchData();
+            // --- LOGIKA FILTER CERDAS ---
+            const cleanSN = extractSerialNumber(decodedText);
+
+            if (cleanSN.length > 3) {
+                // Jika hasil ekstraksi valid (lebih dari 3 karakter)
+                console.log(`Original: ${decodedText} -> Extracted: ${cleanSN}`);
+                
+                snInput.value = cleanSN;
+                stopScanner();
+                fetchData(); // Otomatis cari
+            } else {
+                console.log("Scan diabaikan (terlalu pendek/tidak valid):", decodedText);
+            }
         }
 
         function onScanFailure(error) {
-            // Loop scanning (biasanya diabaikan agar tidak spam log)
+            // Loop scanning...
+        }
+
+        // --- FUNGSI EKSTRAKSI SERIAL NUMBER ---
+        function extractSerialNumber(text) {
+            text = text.toUpperCase();
+
+            // 1. Cek Pola: S/N, SERIAL NUMBER, SERIAL NO, SN
+            // Regex ini mencari awalan tersebut, membuang simbol pemisah, dan mengambil sisa teksnya
+            const patterns = [
+                /S\/N\s*[:.-]?\s*([A-Z0-9\-]+)/,          
+                /SERIAL\s*NUMBER\s*[:.-]?\s*([A-Z0-9\-]+)/, 
+                /SERIAL\s*NO\.?\s*[:.-]?\s*([A-Z0-9\-]+)/,  
+                /SN\s*[:.-]?\s*([A-Z0-9\-]+)/             
+            ];
+
+            for (let pattern of patterns) {
+                const match = text.match(pattern);
+                if (match && match[1]) {
+                    // Jika ketemu pola "S/N: ABCDE", ambil "ABCDE"
+                    return match[1].trim(); 
+                }
+            }
+
+            // 2. Jika tidak ada awalan spesifik (berarti Barcode batang biasa / QR murni)
+            // Bersihkan dari karakter aneh, hanya terima Huruf, Angka, dan Strip (-)
+            // Contoh: "  12345-ABC  " -> "12345-ABC"
+            let rawCode = text.replace(/[^A-Z0-9\-]/g, "").trim();
+            
+            return rawCode;
         }
 
         function stopScanner() {
             if (html5QrCode) {
                 html5QrCode.stop().then((ignore) => {
-                    // QR Code scanning stopped.
                     html5QrCode.clear();
                     document.getElementById('reader').style.display = 'none';
                     stopScanBtn.style.display = 'none';
+                    scanStatus.style.display = 'none';
                 }).catch((err) => {
                     console.error("Failed to stop scanner.");
                 });
             } else {
                 document.getElementById('reader').style.display = 'none';
                 stopScanBtn.style.display = 'none';
+                scanStatus.style.display = 'none';
             }
         }
 
@@ -389,7 +433,6 @@
                 return;
             }
 
-            // Jika kamera masih nyala, matikan dulu
             if(document.getElementById('reader').style.display === 'block') {
                 stopScanner();
             }
